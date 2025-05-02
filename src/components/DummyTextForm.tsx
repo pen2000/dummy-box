@@ -10,6 +10,7 @@ export function DummyTextForm({ selectedType }: DummyTextFormProps) {
   const [length, setLength] = useState<number>(0);
   const [previewText, setPreviewText] = useState<string>("");
   const PREVIEW_MAX_LENGTH = 1000;
+  const MAX_LENGTH = 1000000;
 
   const generateDummyText = (length: number) => {
     if (isNaN(length) || length <= 0) return "";
@@ -19,8 +20,8 @@ export function DummyTextForm({ selectedType }: DummyTextFormProps) {
   };
 
   const handleSubmit = async (values: { length: string }) => {
-    const length = parseInt(values.length);
-    if (isNaN(length) || length <= 0) {
+    const inputLength = parseInt(values.length);
+    if (isNaN(inputLength) || inputLength <= 0) {
       await showToast({
         style: Toast.Style.Failure,
         title: "Error",
@@ -29,9 +30,32 @@ export function DummyTextForm({ selectedType }: DummyTextFormProps) {
       return;
     }
 
-    const dummyText = generateDummyText(length);
+    if (inputLength > MAX_LENGTH) {
+      await showToast({
+        style: Toast.Style.Failure,
+        title: "Error",
+        message: `Maximum length is ${MAX_LENGTH} characters`,
+      });
+      return;
+    }
+
+    const dummyText = generateDummyText(inputLength);
     await Clipboard.copy(dummyText);
     await showHUD("Copied!", { clearRootSearch: true, popToRootType: PopToRootType.Immediate });
+  };
+
+  const handleLengthChange = (value: string) => {
+    const numValue = parseInt(value);
+    if (isNaN(numValue) || numValue <= 0) {
+      setLength(0);
+      setPreviewText("");
+      return;
+    }
+
+    const safeLength = Math.min(numValue, MAX_LENGTH);
+    setLength(safeLength);
+    const previewLength = Math.min(safeLength, PREVIEW_MAX_LENGTH);
+    setPreviewText(generateDummyText(previewLength));
   };
 
   return (
@@ -45,15 +69,12 @@ export function DummyTextForm({ selectedType }: DummyTextFormProps) {
       <Form.TextField 
         id="length" 
         title="Length" 
-        placeholder="Enter the number of characters to generate"
-        onChange={(value) => {
-          setLength(parseInt(value));
-          const previewLength = Math.min(parseInt(value), PREVIEW_MAX_LENGTH);
-          setPreviewText(generateDummyText(previewLength));
-        }}
+        placeholder={`Max length: ${MAX_LENGTH}`}
+        onChange={handleLengthChange}
       />
       <Form.Description 
-        text={previewText ? `${previewText}${length > PREVIEW_MAX_LENGTH ? "\n\n(Preview is limited to 1000 characters)" : ""}` : "This will generate a random dummy text of the specified length."} 
+        title="Preview"
+        text={previewText ? `${previewText}${length > PREVIEW_MAX_LENGTH ? "\n\n(Preview is limited to 1000 characters)" : ""}` : ""} 
       />
     </Form>
   );
