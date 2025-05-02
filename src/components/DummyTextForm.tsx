@@ -1,4 +1,4 @@
-import { Form, ActionPanel, Action, showToast, Toast, Clipboard, useNavigation } from "@raycast/api";
+import { Form, ActionPanel, Action, showToast, Toast, Clipboard, useNavigation, showHUD, PopToRootType } from "@raycast/api";
 import { DummyTextType, DUMMY_TEXTS } from "../constants";
 
 interface DummyTextFormProps {
@@ -24,12 +24,7 @@ export function DummyTextForm({ selectedType }: DummyTextFormProps) {
       .substring(0, length);
 
     await Clipboard.copy(dummyText);
-    await showToast({
-      style: Toast.Style.Success,
-      title: "Copied!",
-      message: `${length} characters of dummy text copied to clipboard`,
-    });
-    pop();
+    await showHUD("Copied!", { clearRootSearch: true ,popToRootType: PopToRootType.Immediate});
   };
 
   return (
