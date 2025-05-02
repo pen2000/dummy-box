@@ -2,8 +2,8 @@
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "dummybox",
   "title": "DummyBox",
-  "description": "",
-  "icon": "extension-icon.png",
+  "description": "Generate dummy text",
+  "icon": "icon.png",
   "author": "pen2000",
   "categories": [
     "Developer Tools"
@@ -11,27 +11,17 @@
   "license": "MIT",
   "commands": [
     {
-      "name": "generate-lorem-text",
-      "title": "Generate Lorem Text",
-      "description": "",
-      "mode": "no-view"
-    },
-    {
-      "name": "generate-japanese-text",
-      "title": "Generate Japanese Text",
-      "description": "",
-      "mode": "no-view"
-    },
-    {
-      "name": "generate-number-text",
-      "title": "Generate Number Text",
-      "description": "",
-      "mode": "no-view"
+      "name": "generate-dummy-text",
+      "title": "Generate Dummy Text",
+      "description": "Generate dummy text",
+      "mode": "view"
     }
   ],
   "dependencies": {
     "@raycast/api": "^1.97.0",
-    "@raycast/utils": "^1.17.0"
+    "@raycast/utils": "^1.17.0",
+    "@types/lorem-ipsum": "^1.0.2",
+    "lorem-ipsum": "^2.0.8"
   },
   "devDependencies": {
     "@raycast/eslint-config": "^2.0.4",
